@@ -4,29 +4,34 @@ import { WeatherButton } from "./components/WeatherButton";
 import { WeatherDisplay } from "./components/WeatherDisplay";
 
 import { fetchWeather, kelvinToCelsius } from "./utils/weatherUtils";
-import { capitalize } from "./utils/stringUtils";
+
+interface WeatherData {
+  temperature: number;
+  city: string;
+}
 
 function App() {
   const apiKey = "94eee5a6edbc745bb937c7bce6f7c36d";
 
   const [inputCity, setInputCity] = useState("");
-  const [displayedCity, setDisplayedCity] = useState("");
-
-  const [temperature, setTemperature] = useState<number | null>(null);
+  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
 
   const [error, setError] = useState<string | null>(null);
 
   const getWeather = async () => {
     try {
-      const temperatureData = kelvinToCelsius(
+      const temperature = kelvinToCelsius(
         await fetchWeather(inputCity, apiKey),
       );
-      setTemperature(temperatureData);
-      setDisplayedCity(inputCity);
+      const data: WeatherData = {
+        city: inputCity,
+        temperature,
+      };
+      setWeatherData(data);
       setError(null);
-    } catch (error) {
+    } catch (_) {
       setError(`Failed to get the temperature for: ${inputCity}.`);
-      setTemperature(null);
+      setWeatherData(null);
     }
   };
 
@@ -45,11 +50,10 @@ function App() {
         {error ? (
           <p className="mt-4 text-red-500">{error}</p>
         ) : (
-          temperature &&
-          displayedCity && (
+          weatherData && (
             <WeatherDisplay
-              city={capitalize(displayedCity)}
-              temperature={temperature}
+              city={weatherData.city}
+              temperature={weatherData.temperature}
             />
           )
         )}
