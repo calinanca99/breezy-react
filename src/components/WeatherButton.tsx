@@ -8,7 +8,8 @@ export const WeatherButton: React.FC<WeatherButtonProps> = (
 ) => (
   <button
     onClick={props.onClick}
-    className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+    className={`rounded px-4 py-2 font-bold text-white
+                ${props.city ? "bg-blue-500 hover:bg-blue-700" : "cursor-not-allowed bg-gray-400"}`}
     disabled={!props.city}
   >
     Get weather
