@@ -43,6 +43,11 @@ function App() {
           type="text"
           value={inputCity}
           onChange={(e) => setInputCity(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key == "Enter" && inputCity) {
+              getWeather();
+            }
+          }}
           className="mb-4 rounded border px-4 py-2"
           placeholder="Groningen"
         ></input>
