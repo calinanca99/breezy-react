@@ -39,14 +39,14 @@ function App() {
 
   const getWeather = async () => {
     try {
-      const temperature = kelvinToCelsius(
-        await fetchWeather(inputCity, apiKey),
-      );
-      const data: WeatherData = {
-        city: inputCity,
+      const temperatureData = await fetchWeather(inputCity, apiKey);
+      const city = temperatureData.city;
+      const temperature = kelvinToCelsius(temperatureData.temperature);
+
+      setWeatherData({
+        city,
         temperature,
-      };
-      setWeatherData(data);
+      });
       setError(null);
     } catch (_) {
       setError(`Failed to get the temperature for: ${inputCity}.`);
