@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { WeatherButton } from "./components/WeatherButton";
 import { WeatherDisplay } from "./components/WeatherDisplay";
@@ -17,6 +17,25 @@ function App() {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
 
   const [error, setError] = useState<string | null>(null);
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "s") {
+        e.preventDefault();
+        inputRef.current?.focus();
+      } else if (e.key === "Escape") {
+        inputRef.current?.blur();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   const getWeather = async () => {
     try {
@@ -41,10 +60,11 @@ function App() {
         <h1 className="mb-4 text-3xl font-bold">Breezy React</h1>
         <input
           type="text"
+          ref={inputRef}
           value={inputCity}
           onChange={(e) => setInputCity(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key == "Enter" && inputCity) {
+            if (e.key === "Enter" && inputCity) {
               getWeather();
             }
           }}
