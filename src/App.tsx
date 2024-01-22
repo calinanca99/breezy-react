@@ -20,8 +20,7 @@ function App() {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // FIX: Cannot input city that contain 's'
-      if (e.key === "s") {
+      if (e.key === "s" && document.activeElement !== inputRef.current) {
         e.preventDefault();
         inputRef.current?.focus();
       } else if (e.key === "Escape") {
