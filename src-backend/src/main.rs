@@ -1,13 +1,13 @@
 use axum::{
     extract::{Path, State},
-    http::{HeaderValue, Method, StatusCode},
+    http::{Method, StatusCode},
     response::{IntoResponse, Response},
     routing::get,
     Router,
 };
 
 use serde::{Deserialize, Serialize};
-use tower_http::cors::CorsLayer;
+use tower_http::cors::{Any, CorsLayer};
 
 #[derive(Clone)]
 pub struct AppState {
@@ -18,8 +18,6 @@ pub struct AppState {
 async fn main() {
     let open_weather_api_key =
         std::env::var("OPEN_WEATHER_API_KEY").expect("OPEN_WEATHER_API_KEY not set");
-    let allowed_origin =
-        std::env::var("ALLOWED_ORIGIN").unwrap_or("http://localhost:5173".to_string());
     let state = AppState {
         open_weather_api_key,
     };
@@ -29,11 +27,15 @@ async fn main() {
         .route("/weather/:city", get(weather))
         .layer(
             CorsLayer::new()
-                .allow_origin(allowed_origin.parse::<HeaderValue>().unwrap())
+                .allow_origin(Any)
                 .allow_methods([Method::GET]),
         )
         .with_state(state);
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    let port = 3000;
+    let addr = format!("127.0.0.1:{port}");
+    let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
+
+    println!("Listening on: {addr}");
 
     axum::serve(listener, app).await.unwrap();
 }
