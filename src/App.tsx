@@ -11,8 +11,6 @@ interface WeatherData {
 }
 
 function App() {
-  const apiKey = "94eee5a6edbc745bb937c7bce6f7c36d";
-
   const [inputCity, setInputCity] = useState("");
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
 
@@ -22,6 +20,7 @@ function App() {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // FIX: Cannot input city that contain 's'
       if (e.key === "s") {
         e.preventDefault();
         inputRef.current?.focus();
@@ -39,7 +38,7 @@ function App() {
 
   const getWeather = async () => {
     try {
-      const temperatureData = await fetchWeather(inputCity, apiKey);
+      const temperatureData = await fetchWeather(inputCity);
       const city = temperatureData.city;
       const temperature = kelvinToCelsius(temperatureData.temperature);
 
@@ -69,7 +68,7 @@ function App() {
             }
           }}
           className="mb-4 rounded border px-4 py-2"
-          placeholder="Groningen"
+          placeholder={`Click or press "s" to search`}
         ></input>
         <WeatherButton onClick={getWeather} city={inputCity} />
         {error ? (
