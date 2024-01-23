@@ -32,7 +32,7 @@ async fn main() {
         )
         .with_state(state);
     let port = 3000;
-    let addr = format!("127.0.0.1:{port}");
+    let addr = format!("0.0.0.0:{port}");
     let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
 
     println!("Listening on: {addr}");
