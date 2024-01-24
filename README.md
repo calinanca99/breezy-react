@@ -1,30 +1,50 @@
-# React + TypeScript + Vite
+# Breezy React
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Visit at: https://breezy-frontend.fly.dev/
 
-Currently, two official plugins are available:
+## Run locally
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+**Running the app locally requires setting an OpenWeather API key.** You can find more details [here](https://openweathermap.org/api).
 
-## Expanding the ESLint configuration
+### Via Docker
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+1. Build and run the Docker image for the backend
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: "latest",
-    sourceType: "module",
-    project: ["./tsconfig.json", "./tsconfig.node.json"],
-    tsconfigRootDir: __dirname,
-  },
-};
+```
+$ cd src-backend/
+$ docker build -t breezy-backend .
+$ docker run -d -p 3000:3000 -e OPEN_WEATHER_API_KEY=<YOUR_API_KEY> breezy-backend:latest
+$ curl -v http://localhost:3000/weather/london
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+2. Build and run the Docker image for the frontend
+
+Set `VITE_API_ENDPOINT` to http://localhost:3000 in `.env.production`.
+
+```
+$ docker build -t breezy-frontend .
+$ docker run -d -p 8000:8000 breezy-frontend:latest
+```
+
+Visit http://localhost:8000.
+
+### Via Cargo and Bun
+
+1. Run the backend
+
+```
+$ cd src-backend/
+$ cp .envrc.example .envrc # update OPEN_WEATHER_API_KEY value
+$ direnv allow . # requires https://direnv.net/
+$ cargo run
+$ curl -v http://localhost:3000/weather/london
+```
+
+2. Run the frontend
+
+```
+$ cp .env.example .env # update VITE_API_ENDPOINT value
+$ bun run dev
+```
+
+Visit http://localhost:5173.
